@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index2</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<script src="index.js"><</script>
+<body>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Memoria</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+    
+        .card {
+            width: 100px;
+            height: 100px;
+            background-color: #FF69B4; 
+            margin: 5px;
+            border-radius: 10px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .card img {
+            display: none;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        .flipped img {
+            display: block;
+        }
+    </style>
+</head>
+<script src="index.js"><</script>
+<body>
+
+    <h1>Instrucciones:</h1>
+    <p>Encuentra todas las parejas de imágenes haciendo clic en las cartas. ¡Buena suerte!</p>
+
+    <div id="gameBoard">
+        
+    </div>
+
+    <script>
+      
+        var imageLinks = [
+            "https://i.pinimg.com/236x/18/80/8e/18808e2bd7ab5b866896ac9748b1f1c2.jpg", // primera imagen
+            "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg-ERQ3UI_8MH7jJAq7js4WPDDk528fUWrxdfEDNs_iYLAxkdj3dvMvXxqfM4knNmWLTjjNI3vbZfb4Zi-dDIdrQIm9wjI2qbj-_PTIKJUbbhi65o2icT90OjH8rzfTEv3N6jvpNZOeZtc/s1600/CRAZY+EMOJI.jpg", //  segunda imagen
+            "https://www.diariodecuyo.com.ar/__export/1526136406029/sites/diariodecuyo/img/2018/05/12/1.png_1006687050.png", // tercera imagen
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsM5t-SmLyJf09D8AQ3srh9YbGfjS8HUyDud_NM1i1hQ&s", // cuarta imagen
+            "https://i.pinimg.com/736x/4d/d6/0a/4dd60a45055d6d9ee7639d819393f967.jpg", // quinta imagen
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSk7MQj6aDKsf3Jz_YHpv-OeuE4rWmuzgG0KlGL4V3xSw&s"  // sexta imagen
+        ];
+
+        
+        var cardLinks = imageLinks.concat(imageLinks);
+
+        
+        cardLinks = shuffleArray(cardLinks);
+
+       
+        function shuffleArray(array) {
+            for (var i = array.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+            return array;
+        }
+
+       
+        var gameBoard = document.getElementById('gameBoard');
+        cardLinks.forEach(function(link) {
+            var card = document.createElement('div');
+            card.className = 'card';
+            var img = document.createElement('img');
+            img.src = link;
+            card.appendChild(img);
+            gameBoard.appendChild(card);
+            card.addEventListener('click', flipCard);
+        });
+
+        var flippedCards = [];
+
+        
+        function flipCard() {
+            if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
+                this.classList.add('flipped');
+                flippedCards.push(this);
+            }
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 1000);
+            }
+        }
+
+       
+        function checkMatch() {
+            if (flippedCards[0].querySelector('img').src === flippedCards[1].querySelector('img').src) {
+                flippedCards.forEach(function(card) {
+                    card.removeEventListener('click', flipCard);
+                });
+            } else {
+                flippedCards.forEach(function(card) {
+                    card.classList.remove('flipped');
+                });
+            }
+            flippedCards = [];
+        }
+
+        
+        setTimeout(function() {
+            var cards = document.querySelectorAll('.card');
+            cards.forEach(function(card) {
+                card.classList.add('flipped');
+            });
+            setTimeout(function() {
+                cards.forEach(function(card) {
+                    card.classList.remove('flipped');
+                });
+            }, 3000); 
+        }, 1000); 
+    </script>
+
+</body>
+</html>
+
+<script>
+    
+
+    
+    function checkWin() {
+        var allCards = document.querySelectorAll('.card');
+        var matchedCards = document.querySelectorAll('.card.flipped');
+        if (matchedCards.length === allCards.length) {
+            
+            document.getElementById('message').textContent = '¡Lo has conseguido!';
+           
+        }
+    }
+
+    
+    function checkMatch() {
+        if (flippedCards[0].querySelector('img').src === flippedCards[1].querySelector('img').src) {
+            flippedCards.forEach(function(card) {
+                card.removeEventListener('click', flipCard);
+            });
+            checkWin(); 
+        } else {
+            flippedCards.forEach(function(card) {
+                card.classList.remove('flipped');
+            });
+        }
+        flippedCards = [];
+    }
+
+   
+</script>
+
+<div id="message"></div>
+<div id="message" style="color: yellow; font-size: 24px; font-weight: bold;"></div>
